@@ -29,16 +29,35 @@ pipeline {
     
         stage('SonarQube analysis') {
             environment {
-                // 'valaxy-sonar-scanner' is the scanner name configured at Manage Jenkins > Tools > SonarQube Scanner Name. Used to set the scanner and version.
-                scannerHome = tool 'valaxy-sonar-scanner';
+                scannerHome = tool 'valaxy-sonar-scanner';              // 'valaxy-sonar-scanner' is the scanner name configured at Manage Jenkins > Tools > SonarQube Scanner Name. Used to set the scanner and version.
             }
 
             steps {
-                // 'valaxy-sonarqube-server' is the server name configured at Manage Jenkins > System > SonarQube servers.
-                withSonarQubeEnv('valaxy-sonarqube-server') {
-                    sh "${scannerHome}/bin/sonar-scanner"           // Comunicates with SonarQube server and send the analysis report.
+                withSonarQubeEnv('valaxy-sonarqube-server') {           // 'valaxy-sonarqube-server' is the server name configured at Manage Jenkins > System > SonarQube servers.
+                    sh "${scannerHome}/bin/sonar-scanner"               // Comunicates with SonarQube server and send the analysis report.
                 }
             }
         }
+
+        stage("Quality Gate") {                                         // Quality gate is used to sync the final status of the Jenkins pipeline with the status of the Sonar scan. If Sonar scan fails, Quality gate is set to error so Jenkins pipeline fails.
+            steps {
+                script {
+                    timeout(time: 1, unit: 'HOURS') {                   // Just in case something goes wrong, pipeline will be killed after a timeout
+                        def qg = waitForQualityGate()                   // Reuse taskId previously collected by withSonarQubeEnv
+                        if (qg.status != 'OK') {
+                            error "Pipeline aborted due to quality gate failure: ${qg.status}"
+                        }
+                    }
+                }
+            }
+        }
+
+
+        // No need to occupy a node
+        stage("Quality Gate"){
+            
+        }
+
+
     }
 }
