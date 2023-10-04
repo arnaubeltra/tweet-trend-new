@@ -16,5 +16,19 @@ pipeline {
                 sh 'mvn clean deploy'
             }
         }
+    
+        stage('SonarQube analysis') {
+            environment {
+                // 'valaxy-sonar-scanner' is the scanner name configured at Manage Jenkins > Tools > SonarQube Scanner Name. Used to set the scanner and version.
+                scannerHome = tool 'valaxy-sonar-scanner';
+            }
+
+            steps {
+                // 'valaxy-sonarqube-server' is the server name configured at Manage Jenkins > System > SonarQube servers.
+                withSonarQubeEnv('valaxy-sonarqube-server') {
+                    sh "${scannerHome}/bin/sonar-scanner"           // Comunicates with SonarQube server and send the analysis report.
+                }
+            }
+        }
     }
 }
