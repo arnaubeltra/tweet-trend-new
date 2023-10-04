@@ -51,13 +51,5 @@ pipeline {
                 }
             }
         }
-
-
-        // No need to occupy a node
-        stage("Quality Gate"){
-            
-        }
-
-
     }
 }
