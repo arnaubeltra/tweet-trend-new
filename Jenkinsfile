@@ -39,7 +39,8 @@ pipeline {
             }
         }
 
-        stage("Quality Gate") {                                         // Quality gate is used to sync the final status of the Jenkins pipeline with the status of the Sonar scan. If Sonar scan fails, Quality gate is set to error so Jenkins pipeline fails.
+        // Quality gate is used to sync the final status of the Jenkins pipeline with the status of the Sonar scan. If Sonar scan fails, Quality gate is set to error so Jenkins pipeline fails.
+        stage("Quality Gate") {                                         
             steps {
                 script {
                     timeout(time: 1, unit: 'HOURS') {                   // Just in case something goes wrong, pipeline will be killed after a timeout
