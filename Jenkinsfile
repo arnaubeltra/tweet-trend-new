@@ -1,5 +1,5 @@
 def registry = 'https://arnaubeltragft.jfrog.io'                    // Artifactory repo url
-def imageName = 'arnaubeltra.jfrog.io/valaxy-docker-local/ttrend'   // Docker image name
+def imageName = 'arnaubeltragft.jfrog.io/valaxy-docker-local/ttrend'   // Docker image name (will be ttrend:version). valaxy-docker-local is the name of the Docker repo in Artifactory.
 def version   = '2.1.2'                                             // Version of Docker image
 
 pipeline {
@@ -84,17 +84,17 @@ pipeline {
             }   
         }
         
-        stage(" Docker Build ") {
+        stage("Docker Build") {
             steps {
                 script {
                     echo '<--------------- Docker Build Started --------------->'
-                    app = docker.build(imageName+":"+version)
+                    app = docker.build(imageName + ":" + version)
                     echo '<--------------- Docker Build Ends --------------->'
                 }
             }
         }
 
-        stage (" Docker Publish "){
+        stage ("Docker Publish to Artifactory repo"){
             steps {
                 script {
                     echo '<--------------- Docker Publish Started --------------->'  
