@@ -94,7 +94,7 @@ pipeline {
             }
         }
 
-        stage ("Docker Publish to Artifactory repo"){
+        stage("Docker Publish to Artifactory repo"){
             steps {
                 script {
                     echo '<--------------- Docker Publish Started --------------->'  
@@ -102,6 +102,14 @@ pipeline {
                         app.push()
                     }    
                     echo '<--------------- Docker Publish Ended --------------->'  
+                }
+            }
+        }
+
+        stage("Deploy") {
+            steps {
+                script {
+                    sh './deploy.sh'
                 }
             }
         }
