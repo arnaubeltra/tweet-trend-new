@@ -1,4 +1,6 @@
-def registry = 'https://arnaubeltragft.jfrog.io'            // Artifactory repo url
+def registry = 'https://arnaubeltragft.jfrog.io'                    // Artifactory repo url
+def imageName = 'arnaubeltra.jfrog.io/valaxy-docker-local/ttrend'   // Docker image name
+def version   = '2.1.2'                                             // Version of Docker image
 
 pipeline {
     agent {
@@ -80,6 +82,28 @@ pipeline {
                     echo '<--------------- Jar Publish Ended --------------->'
                 }
             }   
-        } 
+        }
+        
+        stage(" Docker Build ") {
+            steps {
+                script {
+                    echo '<--------------- Docker Build Started --------------->'
+                    app = docker.build(imageName+":"+version)
+                    echo '<--------------- Docker Build Ends --------------->'
+                }
+            }
+        }
+
+        stage (" Docker Publish "){
+            steps {
+                script {
+                    echo '<--------------- Docker Publish Started --------------->'  
+                    docker.withRegistry(registry, 'artifactory-cred'){
+                        app.push()
+                    }    
+                    echo '<--------------- Docker Publish Ended --------------->'  
+                }
+            }
+        }
     }
 }
