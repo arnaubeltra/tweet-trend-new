@@ -60,7 +60,7 @@ pipeline {
                 script {
                     echo '<--------------- Jar Publish Started --------------->'
                     def server = Artifactory.newServer url:registry + "/artifactory" ,  credentialsId: "artifactory-cred"           // Configure the Artifactory repo url (https://arnaubeltragft.jfrog.io/artifactory)
-                    def properties = "buildid = ${env.BUILD_ID}, commitid = ${GIT_COMMIT}";
+                    def properties = "buildid=${env.BUILD_ID},commitid=${GIT_COMMIT}";
                     // our jar file is stored at the worker at ~/jenkins/workspace/_trend_multibranch_pipeline_main/jarstaging/com/valaxy/demo-workshop/2.1.2 (the path is set according to what has been defined at the pom.xml)
                     // it will look for all files (except .sha1 and .md5 files) inside the jarstaging folder (so it is taking the jar and a pom), and it will store them at the Artifactory repo at libs-release-local folder.
                     def uploadSpec = """{
